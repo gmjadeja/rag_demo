@@ -117,6 +117,9 @@ class AppConfig:
     openai_api_key: str = field(
         default_factory=lambda: os.getenv("OPENAI_API_KEY", "")
     )
+    openai_base_url: str = field(
+        default_factory=lambda: os.getenv("OPENAI_BASE_URL", "")
+    )
     embedding_model: str = EMBEDDING_MODEL
     chat_model: str = CHAT_MODEL
     chroma_persist_dir: str = CHROMA_PERSIST_DIR

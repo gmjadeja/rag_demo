@@ -230,7 +230,7 @@ class OpenAIEmbedder:
         Embedding model name (default: ``"text-embedding-3-small"``).
     """
 
-    def __init__(self, api_key: str, model: str) -> None:
+    def __init__(self, api_key: str, model: str, base_url: str = "") -> None:
         try:
             from openai import OpenAI  # noqa: PLC0415
         except ImportError as exc:
@@ -238,7 +238,10 @@ class OpenAIEmbedder:
                 "openai package is required. Install with: pip install openai"
             ) from exc
 
-        self._client = OpenAI(api_key=api_key)
+        client_kwargs = {"api_key": api_key}
+        if base_url:
+            client_kwargs["base_url"] = base_url
+        self._client = OpenAI(**client_kwargs)
         self._model = model
 
     def embed(self, texts: list[str]) -> list[list[float]]:
@@ -322,6 +325,7 @@ class ChromaVectorStore(BaseVectorStore):
         self._embedder = OpenAIEmbedder(
             api_key=config.openai_api_key,
             model=config.embedding_model,
+            base_url=config.openai_base_url,
         )
         self._client = self._make_client()
         self._collection = self._get_or_create_collection()

@@ -227,7 +227,10 @@ class RAGGenerator(BaseGenerator):
                 "openai package is required. Install with: pip install openai"
             ) from exc
 
-        self._client = OpenAI(api_key=config.openai_api_key)
+        client_kwargs = {"api_key": config.openai_api_key}
+        if config.openai_base_url:
+            client_kwargs["base_url"] = config.openai_base_url
+        self._client = OpenAI(**client_kwargs)
         self._model = config.chat_model
 
     def generate(self, query: str, context: str) -> GeneratorResponse:
