@@ -715,14 +715,16 @@ class WebProcessor:
         Return the :class:`~config.SourceTier` for *url* based on its domain.
 
         The lookup checks whether any key in
-        :data:`~config.DOMAIN_TIER_MAP` appears in the URL's hostname.
-        If no match is found the tier defaults to ``COMMUNITY``.
+        :data:`~config.DOMAIN_TIER_MAP` matches the URL's hostname exactly
+        or as a suffix preceded by a dot (e.g. ``www.canada.ca`` matches
+        ``canada.ca``).  If no match is found the tier defaults to
+        ``COMMUNITY``.
         """
         from config import DOMAIN_TIER_MAP, SourceTier  # noqa: PLC0415
 
         hostname = urlparse(url).hostname or ""
         for domain, tier in DOMAIN_TIER_MAP.items():
-            if domain in hostname:
+            if hostname == domain or hostname.endswith("." + domain):
                 return tier
         return SourceTier.COMMUNITY
 
@@ -734,10 +736,15 @@ class WebProcessor:
         Uses ``requests`` for the HTTP call and ``BeautifulSoup`` for HTML
         parsing.  Script and style elements are removed before extraction.
 
+        Only ``http`` and ``https`` schemes are allowed to prevent SSRF
+        attacks via ``file://`` or other internal-resource URIs.
+
         Raises
         ------
         ImportError
             If ``requests`` or ``beautifulsoup4`` are not installed.
+        ValueError
+            If the URL scheme is not ``http`` or ``https``.
         requests.HTTPError
             If the server returns a non-2xx status code.
         """
@@ -749,6 +756,12 @@ class WebProcessor:
                 "requests and beautifulsoup4 are required for URL processing. "
                 "Install them with: pip install requests beautifulsoup4"
             ) from exc
+
+        parsed = urlparse(url)
+        if parsed.scheme not in ("http", "https"):
+            raise ValueError(
+                f"Only http and https URLs are supported, got: {parsed.scheme!r}"
+            )
 
         logger.info("Fetching URL: %s", url)
         response = requests.get(url, timeout=30)

@@ -302,4 +302,9 @@ class Retriever:
             where={"tier": SourceTier.COMMUNITY.value},
         )
 
+        if not community_results:
+            logger.warning(
+                "No results found from either official or community sources."
+            )
+
         return {"results": community_results, "is_official": False}
