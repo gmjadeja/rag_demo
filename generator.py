@@ -117,6 +117,18 @@ STRICT RULES — READ CAREFULLY
 6. Be concise and precise. Tax law is nuanced — do not over-simplify.
 """
 
+#: Additional instruction appended to the system prompt when the retriever
+#: could only find COMMUNITY-tier results (forums, Reddit, etc.) rather
+#: than official IRCC / CRA documentation.
+COMMUNITY_DISCLAIMER = (
+    "\n\nIMPORTANT ADDITIONAL INSTRUCTION\n"
+    "==================================\n"
+    "The official IRCC documentation does not cover this specific scenario. "
+    "Based on community forums, explain the reasoning or common experiences "
+    "regarding this issue, but explicitly warn the user that this is "
+    "unofficial community guidance and not legal immigration advice."
+)
+
 
 # =============================================================================
 # Public data contract
@@ -161,7 +173,12 @@ class BaseGenerator:
     Subclasses must implement :meth:`generate`.
     """
 
-    def generate(self, query: str, context: str) -> GeneratorResponse:
+    def generate(
+        self,
+        query: str,
+        context: str,
+        is_official: bool = True,
+    ) -> GeneratorResponse:
         """
         Generate an answer for *query* grounded in *context*.
 
@@ -172,6 +189,10 @@ class BaseGenerator:
         context:
             Pre-formatted string of retrieved document chunks (as produced by
             :meth:`~retriever.Retriever.format_context`).
+        is_official:
+            ``True`` when the context comes from official (authoritative)
+            sources.  ``False`` indicates community-sourced context and may
+            trigger a disclaimer in the generated answer.
 
         Returns
         -------
@@ -249,7 +270,12 @@ class RAGGenerator(BaseGenerator):
             else SYSTEM_PROMPT_TEMPLATE
         )
 
-    def generate(self, query: str, context: str) -> GeneratorResponse:
+    def generate(
+        self,
+        query: str,
+        context: str,
+        is_official: bool = True,
+    ) -> GeneratorResponse:
         """
         Build a grounded prompt and call the OpenAI API.
 
@@ -257,10 +283,13 @@ class RAGGenerator(BaseGenerator):
         ------------------------
         1.  **Context injection** — Insert the retrieved CRA chunks into
             ``SYSTEM_PROMPT_TEMPLATE``.
-        2.  **Message list** — Construct the ``[system, user]`` message list
+        2.  **Community disclaimer** — If *is_official* is ``False``, append
+            :data:`COMMUNITY_DISCLAIMER` to instruct the LLM to issue a
+            warning that the answer is based on unofficial community sources.
+        3.  **Message list** — Construct the ``[system, user]`` message list
             that the Chat Completions API expects.
-        3.  **API call** — Send the messages and capture the response.
-        4.  **Result packaging** — Wrap the answer, full prompt representation,
+        4.  **API call** — Send the messages and capture the response.
+        5.  **Result packaging** — Wrap the answer, full prompt representation,
             model name, and token usage into a :class:`GeneratorResponse`.
 
         Parameters
@@ -269,6 +298,10 @@ class RAGGenerator(BaseGenerator):
             The user's question.
         context:
             Formatted string from :meth:`~retriever.Retriever.format_context`.
+        is_official:
+            ``True`` when the context comes from official sources
+            (authoritative answer).  ``False`` triggers a community-source
+            disclaimer in the prompt.
 
         Returns
         -------
@@ -277,6 +310,9 @@ class RAGGenerator(BaseGenerator):
             the educational UI.
         """
         system_content = self._system_prompt_template.format(context=context)
+
+        if not is_official:
+            system_content += COMMUNITY_DISCLAIMER
 
         messages = [
             {"role": "system", "content": system_content},

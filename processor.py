@@ -69,6 +69,7 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 
 logger = logging.getLogger(__name__)
 
@@ -679,3 +680,133 @@ class DocumentProcessor:
             type(self._chunker).__name__,
         )
         return self.process_text(raw_text, meta)
+
+
+# =============================================================================
+# URL / Web Processor
+# =============================================================================
+
+
+class WebProcessor:
+    """
+    Fetch a URL, extract clean text with BeautifulSoup, and chunk it.
+
+    Each produced :class:`DocumentChunk` carries metadata including the
+    source ``url`` and the :class:`~config.SourceTier` value determined
+    from the URL's domain via :data:`~config.DOMAIN_TIER_MAP`.
+
+    Parameters
+    ----------
+    chunker:
+        A :class:`BaseChunker` instance used to split the extracted text.
+    """
+
+    def __init__(self, chunker: BaseChunker) -> None:
+        self._chunker = chunker
+        self._processor = DocumentProcessor(chunker)
+
+    # ------------------------------------------------------------------
+    # Helpers
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def _determine_tier(url: str) -> "SourceTier":
+        """
+        Return the :class:`~config.SourceTier` for *url* based on its domain.
+
+        The lookup checks whether any key in
+        :data:`~config.DOMAIN_TIER_MAP` appears in the URL's hostname.
+        If no match is found the tier defaults to ``COMMUNITY``.
+        """
+        from config import DOMAIN_TIER_MAP, SourceTier  # noqa: PLC0415
+
+        hostname = urlparse(url).hostname or ""
+        for domain, tier in DOMAIN_TIER_MAP.items():
+            if domain in hostname:
+                return tier
+        return SourceTier.COMMUNITY
+
+    @staticmethod
+    def _extract_text(url: str) -> str:
+        """
+        Fetch *url* and return its visible text content.
+
+        Uses ``requests`` for the HTTP call and ``BeautifulSoup`` for HTML
+        parsing.  Script and style elements are removed before extraction.
+
+        Raises
+        ------
+        ImportError
+            If ``requests`` or ``beautifulsoup4`` are not installed.
+        requests.HTTPError
+            If the server returns a non-2xx status code.
+        """
+        try:
+            import requests  # noqa: PLC0415
+            from bs4 import BeautifulSoup  # noqa: PLC0415
+        except ImportError as exc:
+            raise ImportError(
+                "requests and beautifulsoup4 are required for URL processing. "
+                "Install them with: pip install requests beautifulsoup4"
+            ) from exc
+
+        logger.info("Fetching URL: %s", url)
+        response = requests.get(url, timeout=30)
+        response.raise_for_status()
+
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        # Remove non-content elements
+        for tag in soup(["script", "style", "nav", "footer", "header"]):
+            tag.decompose()
+
+        text = soup.get_text(separator="\n", strip=True)
+        # Collapse excessive blank lines
+        text = re.sub(r"\n{3,}", "\n\n", text)
+        return text
+
+    # ------------------------------------------------------------------
+    # Public interface
+    # ------------------------------------------------------------------
+
+    def process_url(
+        self,
+        url: str,
+        metadata: dict[str, Any] | None = None,
+    ) -> list[DocumentChunk]:
+        """
+        Fetch, extract, chunk, and tag content from *url*.
+
+        Every chunk produced carries at least ``{"url": url, "tier": …}``
+        in its metadata so that the retriever can filter by source tier.
+
+        Parameters
+        ----------
+        url:
+            The web page to ingest.
+        metadata:
+            Extra key-value pairs merged into each chunk's metadata.
+
+        Returns
+        -------
+        list[DocumentChunk]
+            Ordered list of chunks with injected URL and tier metadata.
+        """
+        tier = self._determine_tier(url)
+        raw_text = self._extract_text(url)
+
+        meta: dict[str, Any] = {
+            "url": url,
+            "tier": tier.value,
+            "source": url,
+        }
+        if metadata:
+            meta.update(metadata)
+
+        logger.info(
+            "Processing URL '%s' — %d characters, tier=%s",
+            url,
+            len(raw_text),
+            tier.value,
+        )
+        return self._processor.process_text(raw_text, meta)
