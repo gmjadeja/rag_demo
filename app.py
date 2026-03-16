@@ -56,7 +56,7 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 # Local module imports (all in the same directory)
 # ---------------------------------------------------------------------------
-from config import AppConfig, PERSONAS
+from config import AppConfig, DEFAULT_PERSONA, PERSONAS
 from processor import DocumentProcessor, RecursiveCharacterChunker, FixedSizeChunker
 from vector_store import ChromaVectorStore
 from retriever import Retriever
@@ -98,7 +98,7 @@ def _init_session_state() -> None:
 
     # Track the active persona so we can detect switches
     if "active_persona" not in st.session_state:
-        st.session_state.active_persona = list(PERSONAS.keys())[0]
+        st.session_state.active_persona = DEFAULT_PERSONA
 
 
 def _config_changed(cfg: AppConfig) -> bool:

@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass, field
+from typing import TypedDict
 
 from dotenv import load_dotenv
 
@@ -64,12 +65,22 @@ CHROMA_COLLECTION_NAME: str = "canadian_tax_docs"
 # ---------------------------------------------------------------------------
 # Persona definitions — one entry per supported domain
 # ---------------------------------------------------------------------------
+
+
+class PersonaConfig(TypedDict):
+    """Typed structure for a single persona entry in :data:`PERSONAS`."""
+
+    collection_name: str
+    ui_title: str
+    system_prompt: str
+
+
 #: Each persona bundles a ChromaDB collection name, a UI title, and a
 #: domain-specific system prompt template.  The ``{context}`` placeholder
 #: in every ``system_prompt`` is replaced at runtime with the retrieved
 #: document chunks.
 
-PERSONAS: dict[str, dict[str, str]] = {
+PERSONAS: dict[str, PersonaConfig] = {
     "Tax Assistant": {
         "collection_name": "tax_kb",
         "ui_title": "🍁 Canadian Tax Assistant",
@@ -145,6 +156,9 @@ PERSONAS: dict[str, dict[str, str]] = {
         ),
     },
 }
+
+#: The persona selected by default when the application first loads.
+DEFAULT_PERSONA: str = "Tax Assistant"
 
 
 # ---------------------------------------------------------------------------
