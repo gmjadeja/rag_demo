@@ -434,11 +434,18 @@ class ChromaVectorStore(BaseVectorStore):
             Ordered from most similar (highest score) to least similar.
         """
         logger.debug("Embedding query: '%s'", query_text[:80])
+
+        # Guard: if the collection is empty, return immediately
+        count = self.count()
+        if count == 0:
+            logger.warning("query() called on an empty collection — returning [].")
+            return []
+
         query_embedding = self._embedder.embed([query_text])[0]
 
         query_kwargs: dict[str, Any] = {
             "query_embeddings": [query_embedding],
-            "n_results": min(top_k, max(self.count(), 1)),
+            "n_results": min(top_k, count),
             "include": ["documents", "metadatas", "distances", "embeddings"],
         }
         if where:

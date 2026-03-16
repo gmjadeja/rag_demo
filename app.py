@@ -160,6 +160,7 @@ def render_sidebar() -> AppConfig:
         chunking_strategy = st.radio(
             "Strategy",
             options=["Recursive Character (Recommended)", "Fixed-Size Overlap"],
+            key="chunking_strategy_radio",
             help=(
                 "**Recursive Character**: Prefers natural language boundaries "
                 "(paragraphs → sentences → words). Best for legal/tax documents.\n\n"

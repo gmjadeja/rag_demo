@@ -447,7 +447,7 @@ class RecursiveCharacterChunker(BaseChunker):
                 current_length = len(overlap_text) + piece_length
             else:
                 current_parts.append(piece)
-                current_length += piece_length + (1 if current_parts else 0)
+                current_length += piece_length + (1 if len(current_parts) > 1 else 0)
 
         # Don't forget the last accumulator
         if current_parts:
