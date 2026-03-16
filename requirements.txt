@@ -1,0 +1,20 @@
+# =============================================================================
+# Universal RAG Playground - Dependencies
+# =============================================================================
+# Core framework
+streamlit>=1.32.0
+
+# PDF & Document Processing
+pypdf>=4.1.0
+
+# Vector Database (local, no server required)
+chromadb>=0.4.24
+
+# OpenAI API (LLM + Embeddings)
+openai>=1.14.0
+
+# Data utilities
+python-dotenv>=1.0.1
+
+# Type hints (for Python 3.11+ compatibility)
+typing-extensions>=4.10.0

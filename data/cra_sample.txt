@@ -1,0 +1,296 @@
+CANADIAN TAX ASSISTANT — SAMPLE CRA DOCUMENT
+T4 Guide: Employers' Guide — Filing the T4 Slip and Summary (2024)
+Canada Revenue Agency (CRA)
+Source: https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/t4032.html
+
+================================================================================
+SECTION 1: RRSP CONTRIBUTION LIMITS
+================================================================================
+
+Registered Retirement Savings Plan (RRSP) — 2024 Contribution Limits
+
+For the 2024 tax year, the RRSP deduction limit is 18% of your earned income
+from the previous year (2023), up to a maximum of $31,560. This is an increase
+from the 2023 limit of $30,780.
+
+Your personal RRSP deduction limit is shown on your Notice of Assessment or
+Notice of Reassessment from the Canada Revenue Agency. The limit takes into
+account any pension adjustments (PA) from your employer's registered pension
+plan, past service pension adjustments (PSPA), and pension adjustment reversals
+(PAR).
+
+Unused RRSP contribution room from previous years can be carried forward
+indefinitely. This means that if you did not contribute the maximum amount in
+prior years, you can make a larger contribution in the current year.
+
+The deadline to contribute to your RRSP and deduct it on your 2024 tax return
+is March 3, 2025 (60 days after December 31, 2024).
+
+You can contribute to your own RRSP or to your spouse's or common-law partner's
+RRSP. Contributions to a spousal RRSP can still be deducted on your own return,
+subject to your own RRSP deduction limit.
+
+IMPORTANT: There is no US equivalent under Canadian tax law. Contributions to
+a US 401(k) or Roth IRA do not count toward or reduce your Canadian RRSP limit,
+and those US plan types have no legal standing under the Income Tax Act (Canada).
+
+
+================================================================================
+SECTION 2: TFSA — TAX-FREE SAVINGS ACCOUNT
+================================================================================
+
+Tax-Free Savings Account (TFSA) — 2024 Annual Contribution Limit
+
+The annual TFSA dollar limit for 2024 is $7,000. This is the same amount as
+in 2023. The TFSA annual contribution limit is indexed to inflation and
+rounded to the nearest $500.
+
+TFSA Cumulative Contribution Room (if eligible since 2009):
+- 2009–2012: $5,000 per year = $20,000
+- 2013–2014: $5,500 per year = $11,000
+- 2015: $10,000
+- 2016–2018: $5,500 per year = $16,500
+- 2019–2022: $6,000 per year = $24,000
+- 2023: $6,500
+- 2024: $7,000
+
+If you have been eligible since 2009 and have never contributed, your total
+cumulative TFSA room as of January 1, 2024 is $95,000.
+
+Withdrawals from a TFSA are not considered income and do not affect your
+eligibility for federal income-tested benefits and credits. Withdrawals are
+added back to your contribution room on January 1 of the following year.
+
+Over-contributions to a TFSA are subject to a 1% per month tax on the excess
+amount for each month the excess remains in the account. The CRA will assess
+this tax automatically based on the information provided by your financial
+institution.
+
+
+================================================================================
+SECTION 3: EMPLOYMENT INCOME AND T4 SLIPS
+================================================================================
+
+Understanding Your T4 Slip
+
+A T4 slip (Statement of Remuneration Paid) is issued by your employer for
+each tax year in which you received employment income. Employers must send
+employees their T4 slips by the last day of February following the tax year.
+
+Key boxes on the T4 slip:
+
+Box 14 — Employment Income:
+This is the total employment income before any deductions. It includes
+salaries, wages, tips, gratuities, bonuses, vacation pay, and taxable
+allowances or benefits.
+
+Box 16 — Employee's CPP Contributions:
+The amount you contributed to the Canada Pension Plan (CPP) in the tax year.
+For 2024, the CPP contribution rate for employees is 5.95% on earnings between
+the basic exemption ($3,500) and the maximum pensionable earnings ($68,500).
+The maximum annual CPP contribution for an employee in 2024 is $3,867.50.
+
+Box 18 — Employee's EI Premiums:
+Employment Insurance (EI) premiums deducted from your pay. For 2024, the EI
+premium rate for employees is 1.66% on insurable earnings up to the maximum
+insurable earnings of $63,200. The maximum annual EI premium for an employee
+in 2024 is $1,049.12.
+
+Box 22 — Income Tax Deducted:
+The total federal and provincial/territorial income tax withheld from your
+employment income. This is a prepayment of your income tax liability.
+
+Box 52 — Pension Adjustment:
+If your employer has a Registered Pension Plan (RPP) or Deferred Profit Sharing
+Plan (DPSP), a pension adjustment (PA) is calculated and reported in Box 52.
+This amount reduces your RRSP deduction limit for the following year.
+
+
+================================================================================
+SECTION 4: CAPITAL GAINS AND LOSSES
+================================================================================
+
+Capital Gains — 2024 Tax Year
+
+In Canada, only a portion of a capital gain is included in your income and
+subject to tax. This portion is called the "taxable capital gain" and is
+calculated by multiplying the total capital gain by the inclusion rate.
+
+For capital gains realized on or after June 25, 2024:
+- The capital gains inclusion rate is 2/3 (66.67%) for corporations and trusts.
+- For individuals, the first $250,000 of annual capital gains continues to have
+  an inclusion rate of 1/2 (50%). Capital gains above $250,000 in the year are
+  subject to the 2/3 inclusion rate.
+
+This change was announced in the 2024 Federal Budget and represents a
+significant change to the Capital Gains Tax regime in Canada.
+
+The Adjusted Cost Base (ACB) of a capital property is the original purchase
+price plus any costs of acquisition (such as commissions), plus any capital
+improvements made to the property. The capital gain is the difference between
+the proceeds of disposition (selling price minus selling costs) and the ACB.
+
+Principal Residence Exemption:
+If you sell your home and it qualifies as your principal residence for every
+year you owned it, the entire capital gain may be exempt from tax. You must
+designate the property as your principal residence on Schedule 3 of your
+T1 return and file Form T2091(IND).
+
+
+================================================================================
+SECTION 5: GST/HST CREDITS
+================================================================================
+
+GST/HST Credit
+
+The Goods and Services Tax / Harmonized Sales Tax (GST/HST) credit is a
+tax-free quarterly payment that helps individuals and families with low and
+modest incomes offset the GST or HST that they pay.
+
+To be eligible for the GST/HST credit for the 2024 tax year (July 2024 to
+June 2025 payment period), you must:
+- Be a Canadian resident for income tax purposes
+- Be 19 years of age or older (or have a spouse or common-law partner, or be
+  a parent living with your child)
+- Have filed a 2023 income tax return
+
+The CRA automatically determines eligibility when you file your income tax
+return. You do not need to apply separately.
+
+For the July 2024 to June 2025 period, the maximum GST/HST credit amounts are:
+- $519 for single individuals
+- $680 for married or common-law partners
+- $179 for each child under 19 years of age
+
+These amounts are reduced once net family income exceeds $42,335.
+
+
+================================================================================
+SECTION 6: CANADA CHILD BENEFIT (CCB)
+================================================================================
+
+Canada Child Benefit (CCB)
+
+The Canada Child Benefit is a tax-free monthly payment made to eligible families
+to help with the cost of raising children under 18 years of age.
+
+For the 2024–2025 benefit year (July 2024 to June 2025), the maximum annual
+CCB payments are:
+- $7,787 per child under age 6
+- $6,570 per child aged 6 through 17
+
+These maximum amounts apply to families with net income below $36,502. The
+benefit is reduced based on family net income above this threshold using a
+benefit reduction formula specified in section 122.61 of the Income Tax Act.
+
+The CCB may include the Child Disability Benefit (CDB) for families caring for
+a child with a severe and prolonged impairment in physical or mental functions.
+The maximum CDB for 2024–2025 is $3,322 per child.
+
+To receive the CCB, both you and your spouse or common-law partner (if
+applicable) must file income tax returns every year, even if you have no income.
+
+
+================================================================================
+SECTION 7: FOREIGN INCOME AND REPORTING REQUIREMENTS
+================================================================================
+
+Reporting Foreign Income and Assets
+
+Canadian residents must report their worldwide income on their T1 General
+Income Tax Return, including income from foreign sources such as:
+- Foreign employment income
+- Foreign pension income (including US Social Security benefits)
+- Foreign investment income (dividends, interest)
+- Foreign rental income
+
+Foreign Tax Credit:
+If you paid income tax to a foreign country on income you also report in Canada,
+you may be able to claim a foreign tax credit to avoid double taxation. Use
+Form T2209 (Federal Foreign Tax Credits) to calculate this credit.
+
+Note: US Social Security payments received by Canadian residents are treated
+as pension income in Canada and must be reported. Under the Canada-US Tax
+Treaty (Article XVIII), only 85% of US Social Security benefits are included
+in income for Canadian tax purposes.
+
+Foreign Asset Reporting (T1135):
+If you owned foreign property with a total cost of more than $100,000 CAD at
+any time during the tax year, you must file Form T1135 (Foreign Income
+Verification Statement). This applies to:
+- Bank accounts held outside Canada
+- Shares of foreign corporations (not held in registered accounts)
+- Foreign real estate (not for personal use)
+- Interests in foreign partnerships or trusts
+- Other foreign property
+
+The deadline for filing T1135 is the same as your income tax return.
+Penalties for late filing or non-compliance can be significant.
+
+
+================================================================================
+SECTION 8: MEDICAL EXPENSE TAX CREDIT
+================================================================================
+
+Medical Expense Tax Credit (METC)
+
+You can claim eligible medical expenses paid for yourself, your spouse or
+common-law partner, and your dependent children (born in 2007 or later).
+
+Eligible medical expenses must exceed the lesser of:
+- 3% of your net income (line 23600 of your T1 return), OR
+- $2,635 (for 2024)
+
+The credit is calculated at 15% of the eligible medical expenses above this
+threshold.
+
+You can claim any 12-month period ending in the current tax year. Strategically
+choosing your 12-month claim period can maximize the credit, especially if
+expenses were concentrated in one part of the year.
+
+Common eligible medical expenses include:
+- Prescription drugs and medications (prescribed by a licensed medical
+  practitioner)
+- Dental services (not covered by insurance)
+- Vision care (eyeglasses, contact lenses)
+- Hospital services
+- Medical travel expenses (if you travelled more than 40 km to get medical
+  services not available locally)
+- Attendant care costs for persons with disabilities
+
+Cosmetic procedures that are not medically necessary are generally NOT eligible
+as medical expenses.
+
+
+================================================================================
+SECTION 9: DISABILITY TAX CREDIT (DTC)
+================================================================================
+
+Disability Tax Credit (DTC)
+
+The Disability Tax Credit is a non-refundable tax credit that reduces the
+amount of income tax a person with a severe and prolonged physical or mental
+impairment may have to pay.
+
+For 2024, the federal DTC amount is $9,428 (base amount). The credit is
+calculated at 15%, resulting in a maximum federal tax reduction of $1,414.20.
+An additional supplement of $5,500 is available for persons under 18, subject
+to a reduction for child care and attendant care expenses claimed.
+
+To be eligible, a medical practitioner must certify that you have a severe and
+prolonged impairment using Form T2201 (Disability Tax Credit Certificate).
+The CRA reviews and approves DTC applications on a case-by-case basis.
+
+If you are eligible for the DTC but do not owe enough taxes to use the full
+credit, you may be able to transfer the unused portion to a supporting person
+(such as a spouse, parent, or sibling) using Schedule 2 of the T1 return.
+
+
+================================================================================
+END OF SAMPLE DOCUMENT
+================================================================================
+
+This sample document is provided for educational and demonstration purposes
+only. Always refer to the official CRA website (www.canada.ca/cra) and consult
+a qualified Canadian tax professional (CPA) for advice specific to your
+situation. Tax laws are subject to change.
