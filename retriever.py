@@ -65,7 +65,7 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from config import AppConfig
+from config import AppConfig, FALLBACK_SCORE_THRESHOLD, SourceTier
 from vector_store import BaseVectorStore, RetrievalResult
 
 logger = logging.getLogger(__name__)
@@ -231,3 +231,80 @@ class Retriever:
             )
 
         return "\n\n---\n\n".join(lines)
+
+    def retrieve_with_fallback(
+        self,
+        query: str,
+        top_k: int | None = None,
+        threshold: float | None = None,
+    ) -> dict[str, Any]:
+        """
+        Two-stage retrieval: prefer OFFICIAL sources, fall back to COMMUNITY.
+
+        Pipeline
+        --------
+        1.  Query the vector store filtered to ``SourceTier.OFFICIAL`` chunks.
+        2.  If the best match has a similarity score below *threshold*
+            (default :data:`~config.FALLBACK_SCORE_THRESHOLD`), issue a
+            secondary query filtered to ``SourceTier.COMMUNITY`` chunks.
+        3.  Return the winning result set together with a boolean flag
+            indicating which tier was used.
+
+        Parameters
+        ----------
+        query:
+            The user's natural-language question.
+        top_k:
+            Number of chunks to retrieve per stage.  Defaults to
+            ``config.top_k``.
+        threshold:
+            Minimum cosine-similarity score for an official result to be
+            accepted.  Defaults to
+            :data:`~config.FALLBACK_SCORE_THRESHOLD`.
+
+        Returns
+        -------
+        dict
+            ``{"results": list[RetrievalResult], "is_official": bool}``
+        """
+        k = top_k if top_k is not None else self._config.top_k
+        score_threshold = (
+            threshold if threshold is not None else FALLBACK_SCORE_THRESHOLD
+        )
+
+        # --- Step 1: OFFICIAL tier ---
+        official_results = self.retrieve(
+            query,
+            top_k=k,
+            where={"tier": SourceTier.OFFICIAL.value},
+        )
+
+        best_score = official_results[0].score if official_results else 0.0
+
+        if best_score >= score_threshold:
+            logger.info(
+                "Official results accepted (best_score=%.4f >= %.4f).",
+                best_score,
+                score_threshold,
+            )
+            return {"results": official_results, "is_official": True}
+
+        # --- Step 2: COMMUNITY fallback ---
+        logger.info(
+            "Official results too weak (best_score=%.4f < %.4f). "
+            "Falling back to community sources.",
+            best_score,
+            score_threshold,
+        )
+        community_results = self.retrieve(
+            query,
+            top_k=k,
+            where={"tier": SourceTier.COMMUNITY.value},
+        )
+
+        if not community_results:
+            logger.warning(
+                "No results found from either official or community sources."
+            )
+
+        return {"results": community_results, "is_official": False}

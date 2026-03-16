@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass, field
+from enum import Enum
 from typing import TypedDict
 
 from dotenv import load_dotenv
@@ -60,6 +61,44 @@ CHROMA_PERSIST_DIR: str = "./chroma_db"
 #: Name of the ChromaDB collection that stores the Canadian Tax document chunks.
 #: Kept for backward compatibility; personas override this per domain.
 CHROMA_COLLECTION_NAME: str = "canadian_tax_docs"
+
+
+# ---------------------------------------------------------------------------
+# Source-tier classification for URL ingestion
+# ---------------------------------------------------------------------------
+
+
+class SourceTier(Enum):
+    """
+    Classify ingested content by its authoritativeness.
+
+    ``OFFICIAL`` sources (e.g. canada.ca) are treated as primary ground truth
+    during retrieval.  ``COMMUNITY`` sources (e.g. Reddit, canadavisa.com) are
+    used only as a fallback when no strong official match exists.
+    """
+
+    OFFICIAL = "official"
+    COMMUNITY = "community"
+
+
+#: Maps domain substrings to their :class:`SourceTier`.  The retriever and
+#: web processor use this mapping to tag every ingested chunk with the
+#: correct tier.  Add new domains here to extend coverage.
+DOMAIN_TIER_MAP: dict[str, SourceTier] = {
+    "canada.ca": SourceTier.OFFICIAL,
+    "reddit.com": SourceTier.COMMUNITY,
+    "canadavisa.com": SourceTier.COMMUNITY,
+}
+
+
+# ---------------------------------------------------------------------------
+# Retrieval fallback threshold
+# ---------------------------------------------------------------------------
+
+#: Minimum cosine-similarity score for an OFFICIAL-tier result to be
+#: considered "good enough".  If no official chunk meets this threshold the
+#: retriever falls back to COMMUNITY-tier results.
+FALLBACK_SCORE_THRESHOLD: float = 0.6
 
 
 # ---------------------------------------------------------------------------
