@@ -217,9 +217,17 @@ class RAGGenerator(BaseGenerator):
     ----------
     config:
         Application configuration (API key, chat model name).
+    system_prompt_template:
+        Optional system-prompt template containing a ``{context}`` placeholder.
+        When supplied, this overrides the default ``SYSTEM_PROMPT_TEMPLATE``
+        so each Persona can inject its own domain-specific instructions.
     """
 
-    def __init__(self, config: AppConfig) -> None:
+    def __init__(
+        self,
+        config: AppConfig,
+        system_prompt_template: str | None = None,
+    ) -> None:
         try:
             from openai import OpenAI  # noqa: PLC0415
         except ImportError as exc:
@@ -232,6 +240,14 @@ class RAGGenerator(BaseGenerator):
             client_kwargs["base_url"] = config.openai_base_url
         self._client = OpenAI(**client_kwargs)
         self._model = config.chat_model
+
+        # Use the caller-supplied template when available; fall back to the
+        # module-level default for backward compatibility.
+        self._system_prompt_template = (
+            system_prompt_template
+            if system_prompt_template is not None
+            else SYSTEM_PROMPT_TEMPLATE
+        )
 
     def generate(self, query: str, context: str) -> GeneratorResponse:
         """
@@ -260,7 +276,7 @@ class RAGGenerator(BaseGenerator):
             Complete generation result including the full prompt for
             the educational UI.
         """
-        system_content = SYSTEM_PROMPT_TEMPLATE.format(context=context)
+        system_content = self._system_prompt_template.format(context=context)
 
         messages = [
             {"role": "system", "content": system_content},

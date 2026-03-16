@@ -56,7 +56,7 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 # Local module imports (all in the same directory)
 # ---------------------------------------------------------------------------
-from config import AppConfig
+from config import AppConfig, DEFAULT_PERSONA, PERSONAS
 from processor import DocumentProcessor, RecursiveCharacterChunker, FixedSizeChunker
 from vector_store import ChromaVectorStore
 from retriever import Retriever
@@ -66,7 +66,7 @@ from generator import RAGGenerator
 # Page configuration
 # ---------------------------------------------------------------------------
 st.set_page_config(
-    page_title="Universal RAG Playground — Canadian Tax Assistant",
+    page_title="Universal RAG Playground",
     page_icon="🍁",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -95,6 +95,10 @@ def _init_session_state() -> None:
 
     if "last_config_hash" not in st.session_state:
         st.session_state.last_config_hash = None
+
+    # Track the active persona so we can detect switches
+    if "active_persona" not in st.session_state:
+        st.session_state.active_persona = DEFAULT_PERSONA
 
 
 def _config_changed(cfg: AppConfig) -> bool:
@@ -132,7 +136,28 @@ def render_sidebar() -> AppConfig:
     """
     with st.sidebar:
         st.title("🍁 RAG Playground")
-        st.caption("Canadian Tax Assistant")
+
+        # --- Persona Selector (at the very top of the sidebar) ---
+        st.subheader("🎭 Persona")
+        persona_names = list(PERSONAS.keys())
+        selected_persona = st.selectbox(
+            "Select Persona",
+            options=persona_names,
+            index=persona_names.index(st.session_state.active_persona),
+            help="Switch between domain-specific assistants. Each persona "
+                 "uses its own document collection and system prompt.",
+        )
+
+        # Detect persona change — reset chat history and store readiness
+        if selected_persona != st.session_state.active_persona:
+            st.session_state.active_persona = selected_persona
+            st.session_state.messages = []
+            st.session_state.store_ready = False
+            st.session_state.last_config_hash = None
+
+        persona_cfg = PERSONAS[st.session_state.active_persona]
+        st.caption(persona_cfg["ui_title"])
+
         st.divider()
 
         # --- API Key ---
@@ -230,6 +255,7 @@ def render_sidebar() -> AppConfig:
         chunk_size=chunk_size,
         chunk_overlap=chunk_overlap,
         top_k=top_k,
+        collection_name=persona_cfg["collection_name"],
     )
 
 
@@ -252,16 +278,19 @@ def render_ingestion_panel(cfg: AppConfig) -> None:
     """
     st.header("📄 Document Ingestion")
 
+    # Resolve persona-specific labels for the UI
+    persona_cfg = PERSONAS[st.session_state.active_persona]
+
     col1, col2 = st.columns([3, 1])
 
     with col1:
         uploaded_files = st.file_uploader(
-            "Upload CRA documents (PDF or TXT)",
+            f"Upload documents for {persona_cfg['ui_title']} (PDF or TXT)",
             type=["pdf", "txt"],
             accept_multiple_files=True,
             help=(
-                "Upload Canadian tax documents such as CRA folios, T4 guides, "
-                "or Income Tax Act excerpts.  PDF and plain text are supported."
+                "Upload documents relevant to the selected persona. "
+                "PDF and plain text are supported."
             ),
         )
 
@@ -394,7 +423,8 @@ def render_chat(cfg: AppConfig) -> None:
     cfg:
         Application configuration used to build the pipeline components.
     """
-    st.header("💬 Chat with the Canadian Tax Assistant")
+    persona_cfg = PERSONAS[st.session_state.active_persona]
+    st.header(f"💬 Chat with the {persona_cfg['ui_title']}")
 
     if not st.session_state.store_ready:
         st.info(
@@ -416,7 +446,7 @@ def render_chat(cfg: AppConfig) -> None:
                 _render_under_the_hood(msg["under_the_hood"])
 
     # Chat input
-    if user_input := st.chat_input("Ask a Canadian tax question…"):
+    if user_input := st.chat_input("Ask a question…"):
         # Add user message to history
         st.session_state.messages.append(
             {"role": "user", "content": user_input, "under_the_hood": None}
@@ -426,7 +456,7 @@ def render_chat(cfg: AppConfig) -> None:
 
         # Generate response
         with st.chat_message("assistant"):
-            with st.spinner("Searching CRA documents and generating answer…"):
+            with st.spinner("Searching documents and generating answer…"):
                 response_data = _run_rag_pipeline(user_input, cfg)
 
             if response_data is None:
@@ -477,7 +507,13 @@ def _run_rag_pipeline(
     try:
         store = ChromaVectorStore(cfg)
         retriever = Retriever(store, cfg)
-        generator = RAGGenerator(cfg)
+
+        # Resolve the active persona's system-prompt template
+        persona_cfg = PERSONAS[st.session_state.active_persona]
+        generator = RAGGenerator(
+            cfg,
+            system_prompt_template=persona_cfg["system_prompt"],
+        )
 
         # --- Step 1: Retrieve ---
         results = retriever.retrieve(query, top_k=cfg.top_k)
@@ -486,8 +522,8 @@ def _run_rag_pipeline(
             return {
                 "answer": (
                     "I cannot find information about that in the provided "
-                    "CRA documents. Please consult a qualified Canadian tax "
-                    "professional or visit the CRA website directly."
+                    "documents. Please ingest relevant documents for the "
+                    "selected persona and try again."
                 ),
                 "retrieved_chunks": [],
                 "context_string": no_context,
@@ -636,16 +672,18 @@ def main() -> None:
     # Build configuration from sidebar
     cfg = render_sidebar()
 
-    # Hero section
-    st.title("🍁 Universal RAG Playground")
+    # Hero section — dynamically reflects the active persona
+    persona_cfg = PERSONAS[st.session_state.active_persona]
+    st.title(f"🍁 Universal RAG Playground — {persona_cfg['ui_title']}")
     st.markdown(
         """
         **A production-ready, educational Retrieval-Augmented Generation (RAG) system.**
 
-        This playground demonstrates every step of the RAG pipeline using a
-        *Canadian Tax Assistant* as the default use case.  Upload CRA documents,
-        configure the pipeline in the sidebar, and explore the "Under the Hood"
-        expanders to see exactly what happens at each stage.
+        This playground demonstrates every step of the RAG pipeline.
+        Select a **Persona** in the sidebar to switch between domain-specific
+        assistants (e.g. Canadian Tax or Immigration). Upload documents,
+        configure the pipeline, and explore the "Under the Hood" expanders to
+        see exactly what happens at each stage.
 
         ---
         """
